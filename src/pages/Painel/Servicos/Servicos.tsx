@@ -36,7 +36,7 @@ type Feedback = {
   dsFeedback: string;
 };
 
-const API = "http://localhost:8080";
+const API = "https://five63489.onrender.com";
 
 const GRAUS_DIFICULDADE = ["Baixa", "Média", "Alta"];
 

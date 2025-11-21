@@ -14,10 +14,10 @@ type Servico = {
   dsServico: string;
 };
 
-const API_SEGURO = "http://localhost:8080/seguro";
-const API_SERVICO = "http://localhost:8080/servico";
+const API_SEGURO = "https://five63489.onrender.com/seguro";
+const API_SERVICO = "https://five63489.onrender.com/servico";
 
-// Opções prontas
+
 const PLANOS = [
   "Plano Residencial",
   "Plano Empresarial",
@@ -42,7 +42,7 @@ export default function Seguros() {
     cdServico: "",
   });
 
-  // Carrega os dados
+  
   useEffect(() => {
     carregarSeguros();
     carregarServicos();

@@ -79,10 +79,6 @@ export default function Servicos() {
   const [carregandoPagamentos, setCarregandoPagamentos] = useState(false);
   const [carregandoFeedbacks, setCarregandoFeedbacks] = useState(false);
 
-  // ==========================
-  // LOADS
-  // ==========================
-
   const loadServicos = async () => {
     setLoadingLista(true);
     try {
@@ -155,16 +151,12 @@ export default function Servicos() {
   };
 
   useEffect(() => {
-    // Carrega cadastros auxiliares na primeira vez
+  
     loadClientes();
     loadContratados();
     loadPagamentos();
     loadFeedbacks();
   }, []);
-
-  // ==========================
-  // FORM
-  // ==========================
 
   function handleChange(
     e: React.ChangeEvent<
@@ -233,10 +225,6 @@ export default function Servicos() {
     }
   }
 
-  // ==========================
-  // EDITAR / EXCLUIR
-  // ==========================
-
   function handleEdit(s: Servico) {
     setForm({
       dsServico: s.dsServico,
@@ -272,10 +260,6 @@ export default function Servicos() {
     }
   }
 
-  // ==========================
-  // HELPERS DE NOME
-  // ==========================
-
   const nomeCliente = (id: number | "") => {
     const c = clientes.find((x) => x.cdCliente === Number(id));
     return c ? c.dsNome : id ? `Cliente ${id}` : "-";
@@ -303,10 +287,6 @@ export default function Servicos() {
     const f = feedbacks.find((x) => x.cdFeedback === Number(id));
     return f ? f.dsFeedback : id ? `Feedback ${id}` : "-";
   };
-
-  // ==========================
-  // RENDER
-  // ==========================
 
   return (
     <main className="p-8 flex flex-col gap-8">

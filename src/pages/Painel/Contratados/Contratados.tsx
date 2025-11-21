@@ -13,7 +13,7 @@ type Contratado = {
 };
 
 // API
-const API_URL = "http://localhost:8080/contratado";
+const API_URL = "https://five63489.onrender.com/contratado";
 
 // Selects padrão
 const REGIOES = ["Zona Norte", "Zona Sul", "Zona Leste", "Zona Oeste", "Centro"];

@@ -1,3 +1,18 @@
+##  Sumário
+
+- [Sobre o Projeto](#sobre-o-projeto)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Integrações](#integrações)
+- [Entidades Integradas](#entidades-integradas)
+- [Instalação](#instalação)
+- [Como Usar](#como-usar)
+- [Estrutura de Pastas](#estrutura-de-pastas)
+- [Endpoints Principais](#endpoints-principais)
+- [Imagens / Screenshots](#imagens-e-ícones)
+- [Integrantes](#integrantes)
+- [Links Importantes](#links-importantes)
+- [Contato](#contato)
+
 #  ArrumAi – Reformas & Obras Inteligentes
 
 ##  Sobre o Projeto
@@ -21,34 +36,65 @@ A aplicação é totalmente integrada à API em Java (Domain Driven Design) hosp
 
 ---
 
-##  Integrantes
-| Nome | RM | Turma |
-|------|----|--------|
-| **Bruno Ferreira** | 563489 | 1TDSR |
-| **Gabriel Robertoni Padilha** | 566293 | 1TDSR |
-| **Leonardo Aragaki Rodrigues** | 562944 | 1TDSR |
+##  Integrações
+O projeto consome endpoints da **API em Java hospedada no Render**, realizando operações **CRUD completas** com integração direta ao banco de dados Oracle.
 
 ---
 
-##  Acesso ao Sistema
-
-Login padrão para testes:
-
--  **E-mail:** `admin@arrumai.com`  
--  **Senha:** `123456`
-
+### Entidades Integradas:
+- Clientes  
+- Contratados  
+- Serviços  
+- Pagamentos  
+- Seguros 
+- Feedbacks  
 
 ---
 
-##  Imagens e Ícones
+## Instalação
 
-###  Página Inicial
-![Home](./src/assets/fotoHome.jpeg)
+# 1. Clone o repositório
+git clone https://github.com/brunoferr10/GS_Front-End.git
 
-###  Página de Integrantes
-<img src="./src/assets/Bruno.jpeg" alt="Bruno Ferreira" width="180"/>  
-<img src="./src/assets/Gabriel.jpeg" alt="Gabriel Robertoni" width="180"/>  
-<img src="./src/assets/leonardo.jpeg" alt="Leonardo Aragaki" width="180"/>
+# 2. Acesse a pasta
+cd GS_Front-End
+
+# 3. Instale as dependências
+npm install
+
+# 4. Rode o projeto
+npm run dev
+
+---
+
+## Como Usar
+
+# Login
+
+-Use o login de testes:
+-E-mail: admin@arrumai.com
+-Senha: 123456
+
+# Navegação
+
+-Ao entrar, o usuário tem acesso a:
+
+-Clientes
+-Contratados
+-Serviços
+-Pagamentos
+-Seguros
+-Feedbacks
+
+Todos com CRUD 100% funcional.
+
+# Responsividade
+
+Menu responsivo com ícones em telas pequenas
+
+Layout adaptativo (XS → XL)
+
+Tema escuro e claro com persistência
 
 ---
 
@@ -125,6 +171,50 @@ ARRUMAI-FRONTEND/
 
 ---
 
+## Endpoints Principais
+
+-Clientes
+-GET /cliente
+-POST /cliente
+-PUT /cliente/{id}
+-DELETE /cliente/{id}
+-Contratados
+-GET /contratado
+-Serviços
+-GET /servico
+-Pagamentos
+-GET /pagamento
+-Seguros
+-GET /seguro
+-Feedback
+-GET /feedback
+
+Todos hospedados no Render:
+ https://five63489.onrender.com/
+
+ ---
+
+##  Imagens e Ícones
+
+###  Página Inicial
+![Home](./src/assets/fotoHome.jpeg)
+
+###  Página de Integrantes
+<img src="./src/assets/Bruno.jpeg" alt="Bruno Ferreira" width="180"/>  
+<img src="./src/assets/Gabriel.jpeg" alt="Gabriel Robertoni" width="180"/>  
+<img src="./src/assets/leonardo.jpeg" alt="Leonardo Aragaki" width="180"/>
+
+---
+
+##  Integrantes
+| Nome | RM | Turma |
+|------|----|--------|
+| **Bruno Ferreira** | 563489 | 1TDSR |
+| **Gabriel Robertoni Padilha** | 566293 | 1TDSR |
+| **Leonardo Aragaki Rodrigues** | 562944 | 1TDSR |
+
+---
+
 ##  Links Importantes
 
 ###  Repositório GitHub  
@@ -134,36 +224,14 @@ ARRUMAI-FRONTEND/
  [https://gs-front-end-one.vercel.app/](https://gs-front-end-one.vercel.app/)
 
 ###  Vídeo de Apresentação (YouTube)  
- 
+ [https://www.youtube.com/watch?v=WBpXPwi-oos](https://www.youtube.com/watch?v=WBpXPwi-oos)
 
 ---
 
-##  Integrações
-O projeto consome endpoints da **API em Java hospedada no Render**, realizando operações **CRUD completas** com integração direta ao banco de dados Oracle.
+## Contato
 
----
+Caso deseje falar com o grupo:
 
-### Entidades Integradas:
-- Clientes  
-- Contratados  
-- Serviços  
-- Pagamentos  
-- Seguros 
-- Feedbacks  
-
----
-
-##  Conclusão
-
-O projeto ArrumAi representa a integração entre múltiplas disciplinas da FIAP, unindo:
-
-Front-End com React + Tailwind
-
-Back-End com Java + API REST
-
-Banco de Dados Relacional (Oracle)
-
-Boas práticas de design, responsividade e acessibilidade
-
-GS — Front-End Design Engineering
-Foco: Integração, usabilidade e sistema de gestão para obras e serviços.
+-Bruno Ferreira – brunoferr2014@gmail.com
+-GitHub: https://github.com/brunoferr10
+-LinkedIn: https://www.linkedin.com/in/bruno-ferreira-4837a0207/

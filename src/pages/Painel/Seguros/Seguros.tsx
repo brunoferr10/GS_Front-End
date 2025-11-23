@@ -33,8 +33,12 @@ export default function Seguros() {
 
   const [seguros, setSeguros] = useState<Seguro[]>([]);
   const [servicos, setServicos] = useState<Servico[]>([]);
-  const [mostrarLista, setMostrarLista] = useState(false);
+
+  // Estados de carregamento individual
+  const [carregandoServicos, setCarregandoServicos] = useState(false);
   const [loadingLista, setLoadingLista] = useState(false);
+
+  const [mostrarLista, setMostrarLista] = useState(false);
   const [editandoId, setEditandoId] = useState<number | null>(null);
 
   const [form, setForm] = useState<Seguro>({
@@ -51,16 +55,22 @@ export default function Seguros() {
   }, []);
 
   async function carregarServicos() {
+    if (servicos.length || carregandoServicos) return;
+    setCarregandoServicos(true);
+
     try {
       const res = await fetch(API_SERVICO);
       if (res.ok) setServicos(await res.json());
     } catch {
       console.log("Erro ao carregar serviços.");
+    } finally {
+      setCarregandoServicos(false);
     }
   }
 
   async function carregarSeguros() {
     setLoadingLista(true);
+
     try {
       const res = await fetch(API_SEGURO);
       if (res.ok) setSeguros(await res.json());
@@ -153,6 +163,7 @@ export default function Seguros() {
 
     try {
       const res = await fetch(`${API_SEGURO}/${id}`, { method: "DELETE" });
+
       if (res.ok) {
         alert("Seguro excluído!");
         carregarSeguros();
@@ -186,6 +197,7 @@ export default function Seguros() {
         </button>
       </div>
 
+
       {/* FORMULÁRIO */}
       <form
         onSubmit={handleSubmit}
@@ -216,7 +228,7 @@ export default function Seguros() {
             </select>
           </div>
 
-          {/* Cobertura */}
+          {/* Valor cobertura */}
           <div className="flex flex-col gap-1">
             <label className="font-semibold text-sm">Valor da Cobertura (R$)</label>
             <input
@@ -260,22 +272,30 @@ export default function Seguros() {
               name="cdServico"
               value={form.cdServico}
               onChange={handleChange}
+              onClick={carregarServicos}
               required
               className={`p-3 rounded border ${
                 isDark ? "bg-[#181818] border-[#333]" : "bg-gray-100"
               }`}
             >
-              <option value="">Selecione...</option>
-              {servicos.map((s) => (
-                <option key={s.cdServico} value={s.cdServico}>
-                  {s.dsServico}
-                </option>
-              ))}
+              {carregandoServicos ? (
+                <option value="">Carregando serviços...</option>
+              ) : (
+                <>
+                  <option value="">Selecione...</option>
+                  {servicos.map((s) => (
+                    <option key={s.cdServico} value={s.cdServico}>
+                      {s.dsServico}
+                    </option>
+                  ))}
+                </>
+              )}
             </select>
           </div>
+
         </div>
 
-        {/* Descrição da cobertura */}
+        {/* Cobertura descrição */}
         <div className="flex flex-col gap-1">
           <label className="font-semibold text-sm">Descrição da Cobertura</label>
           <textarea
@@ -290,7 +310,7 @@ export default function Seguros() {
           />
         </div>
 
-        {/* BOTÃO SALVAR */}
+        {/* BOTÃO */}
         <button
           type="submit"
           className={`w-full text-white font-bold py-3 rounded-lg mt-4 transition ${
@@ -302,6 +322,7 @@ export default function Seguros() {
           {editandoId ? "Salvar Alterações" : "Salvar Seguro"}
         </button>
       </form>
+
 
       {/* LISTA */}
       {mostrarLista && (
@@ -328,11 +349,11 @@ export default function Seguros() {
                       : "border-gray-400 text-black"
                   }`}
                 >
-                  <th className="py-2 px-2 text-left">Apolice</th>
-                  <th className="py-2 px-2 text-left">Plano</th>
-                  <th className="py-2 px-2 text-left">Cobertura (R$)</th>
-                  <th className="py-2 px-2 text-left">Situação</th>
-                  <th className="py-2 px-2 text-left">Serviço</th>
+                  <th className="py-2 px-2">Apolice</th>
+                  <th className="py-2 px-2">Plano</th>
+                  <th className="py-2 px-2">Cobertura</th>
+                  <th className="py-2 px-2">Situação</th>
+                  <th className="py-2 px-2">Serviço</th>
                   <th className="py-2 px-2 text-center">Ações</th>
                 </tr>
               </thead>
@@ -373,10 +394,12 @@ export default function Seguros() {
                   </tr>
                 ))}
               </tbody>
+
             </table>
           )}
         </section>
       )}
+
     </main>
   );
 }

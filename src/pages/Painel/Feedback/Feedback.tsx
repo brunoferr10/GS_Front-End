@@ -31,6 +31,10 @@ export default function FeedbackPage() {
   const [lista, setLista] = useState<Feedback[]>([]);
   const [servicos, setServicos] = useState<Servico[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
+
+  const [carregandoServicos, setCarregandoServicos] = useState(false);
+  const [carregandoClientes, setCarregandoClientes] = useState(false);
+
   const [mostrarLista, setMostrarLista] = useState(false);
   const [loadingLista, setLoadingLista] = useState(false);
   const [editandoId, setEditandoId] = useState<number | null>(null);
@@ -52,8 +56,8 @@ export default function FeedbackPage() {
     setLoadingLista(true);
     try {
       const res = await fetch(API_URL);
-      if (!res.ok) return setLista([]);
-      setLista(await res.json());
+      if (res.ok) setLista(await res.json());
+      else setLista([]);
     } catch {
       console.log("Erro ao carregar feedbacks");
     } finally {
@@ -62,28 +66,36 @@ export default function FeedbackPage() {
   }
 
   async function carregarServicos() {
+    if (servicos.length || carregandoServicos) return;
+    setCarregandoServicos(true);
+
     try {
       const res = await fetch(API_SERVICO);
-      if (!res.ok) return setServicos([]);
-      setServicos(await res.json());
+      if (res.ok) setServicos(await res.json());
     } catch {
       console.log("Erro ao carregar serviços");
+    } finally {
+      setCarregandoServicos(false);
     }
   }
 
   async function carregarClientes() {
+    if (clientes.length || carregandoClientes) return;
+    setCarregandoClientes(true);
+
     try {
       const res = await fetch(API_CLIENTE);
-      if (!res.ok) return setClientes([]);
-      setClientes(await res.json());
+      if (res.ok) setClientes(await res.json());
     } catch {
       console.log("Erro ao carregar clientes");
+    } finally {
+      setCarregandoClientes(false);
     }
   }
 
   function nomeCliente(id: number | string) {
     const c = clientes.find((x) => x.cdCliente === Number(id));
-    return c ? c.dsNome : "";
+    return c ? c.dsNome : "-";
   }
 
   function nomeServicoComCliente(id: number | string) {
@@ -118,20 +130,24 @@ export default function FeedbackPage() {
       cdServico: Number(form.cdServico),
     };
 
-    const res = await fetch(url, {
-      method: metodo,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const res = await fetch(url, {
+        method: metodo,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    if (!res.ok) {
-      alert("Erro ao salvar feedback.");
-      return;
+      if (!res.ok) {
+        alert("Erro ao salvar feedback.");
+        return;
+      }
+
+      carregarFeedbacks();
+      limparFormulario();
+      alert(editandoId ? "Feedback atualizado!" : "Feedback cadastrado!");
+    } catch {
+      alert("Erro de comunicação com servidor.");
     }
-
-    carregarFeedbacks();
-    limparFormulario();
-    alert(editandoId ? "Feedback atualizado!" : "Feedback cadastrado!");
   }
 
   function iniciarEdicao(f: Feedback) {
@@ -149,8 +165,12 @@ export default function FeedbackPage() {
     if (!id) return;
     if (!confirm("Deseja realmente excluir este feedback?")) return;
 
-    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-    if (res.status === 204) carregarFeedbacks();
+    try {
+      const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+      if (res.status === 204) carregarFeedbacks();
+    } catch {
+      alert("Erro ao excluir.");
+    }
   }
 
   return (
@@ -182,13 +202,13 @@ export default function FeedbackPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
           <div className="flex flex-col">
-            <label className="font-semibold">Título da Avaliação</label>
+            <label className="font-semibold">Título</label>
             <input
               name="dsFeedback"
               value={form.dsFeedback}
               onChange={handleChange}
               required
-              placeholder="Ex.: Atendimento rápido e eficiente"
+              placeholder="Ex: Atendimento excelente!"
               className={`p-3 rounded border ${
                 isDark ? "bg-[#181818] border-[#333]" : "bg-gray-100"
               }`}
@@ -196,7 +216,7 @@ export default function FeedbackPage() {
           </div>
 
           <div className="flex flex-col">
-            <label className="font-semibold">Data de envio</label>
+            <label className="font-semibold">Data de Envio</label>
             <input
               type="date"
               name="dtEnvio"
@@ -216,33 +236,43 @@ export default function FeedbackPage() {
               value={form.dsComentario}
               onChange={handleChange}
               required
-              placeholder="Descreva como foi sua experiência..."
               className={`p-3 rounded border h-28 ${
                 isDark ? "bg-[#181818] border-[#333]" : "bg-gray-100"
               }`}
+              placeholder="Descreva sua experiência..."
             />
           </div>
 
           <div className="flex flex-col">
-            <label className="font-semibold">Serviço relacionado</label>
+            <label className="font-semibold">Serviço</label>
             <select
               name="cdServico"
               value={form.cdServico}
               onChange={handleChange}
+              onClick={() => {
+                carregarServicos();
+                carregarClientes();
+              }}
               required
               className={`p-3 rounded border ${
                 isDark ? "bg-[#181818] border-[#333]" : "bg-gray-100"
               }`}
             >
-              <option value="">Selecione...</option>
-
-              {servicos.map((s) => (
-                <option key={s.cdServico} value={s.cdServico}>
-                  {s.dsServico} — Cliente: {nomeCliente(s.cdCliente)}
-                </option>
-              ))}
+              {carregandoServicos || carregandoClientes ? (
+                <option value="">Carregando Serviços...</option>
+              ) : (
+                <>
+                  <option value="">Selecione o Serviço e o Cliente...</option>
+                  {servicos.map((s) => (
+                    <option key={s.cdServico} value={s.cdServico}>
+                      {s.dsServico} — Cliente: {nomeCliente(s.cdCliente)}
+                    </option>
+                  ))}
+                </>
+              )}
             </select>
           </div>
+
         </div>
 
         <button
@@ -253,7 +283,7 @@ export default function FeedbackPage() {
               : "bg-green-600 hover:bg-green-700"
           }`}
         >
-          {editandoId ? "Salvar Alterações" : "Salvar Avaliação"}
+          {editandoId ? "Salvar Alterações" : "Salvar Feedback"}
         </button>
       </form>
 
@@ -285,7 +315,7 @@ export default function FeedbackPage() {
                   <th className="py-2">Comentário</th>
                   <th className="py-2">Data</th>
                   <th className="py-2">Serviço / Cliente</th>
-                  <th className="py-2">Ações</th>
+                  <th className="py-2 text-center">Ações</th>
                 </tr>
               </thead>
 
@@ -294,7 +324,9 @@ export default function FeedbackPage() {
                   <tr
                     key={f.cdFeedback}
                     className={`border-b ${
-                      isDark ? "border-[#222] text-white hover:bg-[#1a1a1a]" : "border-gray-300 text-black hover:bg-gray-200"
+                      isDark
+                        ? "border-[#222] text-white hover:bg-[#1a1a1a]"
+                        : "border-gray-300 text-black hover:bg-gray-200"
                     }`}
                   >
                     <td className="py-2">{f.cdFeedback}</td>
@@ -321,10 +353,12 @@ export default function FeedbackPage() {
                   </tr>
                 ))}
               </tbody>
+
             </table>
           )}
         </section>
       )}
+
     </main>
   );
 }
